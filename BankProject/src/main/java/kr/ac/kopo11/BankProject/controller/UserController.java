@@ -1,13 +1,12 @@
 package kr.ac.kopo11.BankProject.controller;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,23 +28,13 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/write") // CREATE, POST
-	public User insertUser(Model model, @RequestParam(value = "id") String userid,
-			@RequestParam(value = "pwd") String pwd, @RequestParam(value = "name") String name,
-			@RequestParam(value = "birth") String birth, @RequestParam(value = "address") String address,
-			@RequestParam(value = "phone") String phone) {
+	public User insertUser(Model model, @RequestBody User user) {
 			
 		
-			userService.findByUserid(userid).ifPresent(m -> {
+			userService.findByUserid(user.getUserid()).ifPresent(m -> {
 	            throw new IllegalStateException("이미 존재하는 회원입니다.");
 	        });
-	
-			User user = new User();
-			user.setUserid(userid);
-			user.setPassword(pwd);
-			user.setName(name);
-			user.setBirth(birth);
-			user.setAddress(address);
-			user.setPhone(phone);
+
 
 		return userService.save(user);
 	}
@@ -70,20 +59,17 @@ public class UserController {
 	
 	
 	@RequestMapping(value="/update") // UpdateAll, PUT
-	public User updateUser(Model model, @RequestParam(value = "id") String userid,
-			@RequestParam(value = "pwd") String pwd, @RequestParam(value = "name") String name,
-			@RequestParam(value = "birth") String birth, @RequestParam(value = "address") String address,
-			@RequestParam(value = "phone") String phone) {
+	public User updateUser(Model model, @RequestBody User user) {
 
-			User user = userService.findByUserid(userid).get();
-			user.setUserid(userid);
-			user.setPassword(pwd);
-			user.setName(name);
-			user.setBirth(birth);
-			user.setAddress(address);
-			user.setPhone(phone);
+			User userNow = userService.findByUserid(user.getUserid()).get();
+			userNow.setUserid(user.getUserid());
+			userNow.setPassword(user.getPassword());
+			userNow.setName(user.getName());
+			userNow.setBirth(user.getBirth());
+			userNow.setAddress(user.getAddress());
+			userNow.setPhone(user.getPhone());
 
-		return userService.save(user);
+		return userService.save(userNow);
 	}
 	
 
