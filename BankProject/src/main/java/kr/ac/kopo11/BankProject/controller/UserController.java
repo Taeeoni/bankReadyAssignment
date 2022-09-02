@@ -38,11 +38,7 @@ public class UserController {
 	@PostMapping(value="/write") // CREATE, POST
 	public User insertUser(Model model, @RequestBody User user) {
 			
-		
-			userService.findByUserid(user.getUserid()).ifPresent(m -> {
-	            throw new IllegalStateException("이미 존재하는 회원입니다.");
-	        });
-
+		userService.validateDuplicateUser(user);
 
 		return userService.save(user);
 	}

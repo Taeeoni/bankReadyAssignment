@@ -91,5 +91,11 @@ public class UserService {
 		return patchedUser;
 	}
 
+	public void validateDuplicateUser(User user) {
+		findByUserid(user.getUserid()).ifPresent(m -> {
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
+        });
+	}
+
 
 }
