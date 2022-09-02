@@ -1,6 +1,7 @@
 package kr.ac.kopo11.BankProject.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.transaction.Transactional;
 
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,6 +68,7 @@ public class UserController {
 	
 	@PutMapping(value="/update") // UpdateAll, PUT
 	public ResponseEntity<User> updateUser(Model model, @RequestBody User user) {
+			
 
 			User userUpdated = userService.update(user);
 
@@ -89,6 +92,12 @@ public class UserController {
 	public String delete(Model model, @RequestParam(value = "id") String userid) {
 		userService.delete(userid);
 		return "삭제가 되었습니다.";
+	}
+	
+	@ExceptionHandler({NoSuchElementException.class , NullPointerException.class})
+	public Object nullEx(Exception e) {
+		
+		return "TaeeonServiceException";
 	}
 	
 	
