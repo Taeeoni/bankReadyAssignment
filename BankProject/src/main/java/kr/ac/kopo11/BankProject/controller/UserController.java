@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.ac.kopo11.BankProject.domain.User;
@@ -46,48 +46,40 @@ public class UserController {
 	
 	
 	@GetMapping(value="/allRead") // GET ALL 
-	@ResponseBody
-	public List<User> allRead(Model model) {
+	public ResponseEntity<List<User>> allRead(Model model) {
 		
 		List<User> users = userService.findAll();
 		
-		return users;
+		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 	}
 	
 	
 	@GetMapping(value="/oneRead") // GET ONE
-	@ResponseBody
-	public User oneRead(Model model, @RequestParam(value = "id") String userid ) {
+	public ResponseEntity<User> oneRead(Model model, @RequestParam(value = "id") String userid ) {
 		
 		User user = userService.findByUserid(userid).get();
 		
-		return user;
+		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
 	
 	@PutMapping(value="/update") // UpdateAll, PUT
-	public User updateUser(Model model, @RequestBody User user) {
+	public ResponseEntity<User> updateUser(Model model, @RequestBody User user) {
 
-			User userNow = userService.findByUserid(user.getUserid()).get();
-			userNow.setUserid(user.getUserid());
-			userNow.setPassword(user.getPassword());
-			userNow.setName(user.getName());
-			userNow.setBirth(user.getBirth());
-			userNow.setAddress(user.getAddress());
-			userNow.setPhone(user.getPhone());
+			User userUpdated = userService.update(user);
 
-		return userService.save(userNow);
+			return new ResponseEntity<User>(userUpdated, HttpStatus.OK);
 	}
 	
 
 	
-	@PatchMapping(value="/updatePwd") // PATCH
-	public User updatePwd(Model model, @RequestParam(value = "id") String userid, @RequestParam(value = "pwd") String pwd) {
+	@PatchMapping(value="/updatePatch") // PATCH
+	public ResponseEntity<User> updatePatch(Model model, @RequestBody User user) {
 		
-		User user = userService.findByUserid(userid).get();
-		user.setPassword(pwd);
+		User patchedUser = userService.patch(user);
 		
-		return userService.save(user);
+	
+		return new ResponseEntity<User>(patchedUser, HttpStatus.OK);
 	}
 	
 	
